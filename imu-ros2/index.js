@@ -29,7 +29,7 @@ function handleOrientation(event) {
 
     console.log(`Roll: ${roll}, Pitch: ${pitch}, Yaw: ${yaw}`); // コンソールに出力
 
-    document.getElementById('samurai_x').innerText = `Roll3: ${roll}`;
+    document.getElementById('samurai_x').innerText = `Roll4: ${roll}`;
     document.getElementById('samurai_y').innerText = `Pitch: ${pitch}`;
     document.getElementById('samurai_z').innerText = `Yaw: ${yaw}`;
 
