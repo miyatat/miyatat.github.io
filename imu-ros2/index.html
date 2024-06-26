@@ -42,9 +42,9 @@
         };
 
         function handleOrientation(event) {
-            const roll = event.beta.toFixed(2);  // Rotation around X-axis
-            const pitch = event.gamma.toFixed(2); // Rotation around Y-axis
-            const yaw = event.alpha.toFixed(2);  // Rotation around Z-axis
+            const roll = event.beta ? event.beta.toFixed(2) : 0;  // Rotation around X-axis
+            const pitch = event.gamma ? event.gamma.toFixed(2) : 0; // Rotation around Y-axis
+            const yaw = event.alpha ? event.alpha.toFixed(2) : 0;  // Rotation around Z-axis
 
             document.getElementById('roll').innerText = roll;
             document.getElementById('pitch').innerText = pitch;
@@ -63,4 +63,3 @@
     </script>
 </body>
 </html>
-
