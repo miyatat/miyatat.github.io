@@ -1,6 +1,6 @@
 window.addEventListener('deviceorientation', handleOrientation, true);
 
-const socket = new WebSocket('ws://<PCのIPアドレス>:8000');
+const socket = new WebSocket('ws://192.168.10.16:8000');
 
 socket.onopen = function(event) {
     console.log("WebSocket is open now.");
@@ -19,7 +19,7 @@ function handleOrientation(event) {
     const pitch = event.gamma ? event.gamma.toFixed(2) : 0; // Rotation around Y-axis
     const yaw = event.alpha ? event.alpha.toFixed(2) : 0;  // Rotation around Z-axis
 
-    document.getElementById('samurai_x').innerText = `Roll: ${roll}`;
+    document.getElementById('samurai_x').innerText = `Roll2: ${roll}`;
     document.getElementById('samurai_y').innerText = `Pitch: ${pitch}`;
     document.getElementById('samurai_z').innerText = `Yaw: ${yaw}`;
 
