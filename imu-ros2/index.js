@@ -1,7 +1,7 @@
 window.addEventListener('deviceorientation', handleOrientation, true);
 
-// PCのIPアドレスを正しく設定
-const socket = new WebSocket('wss://192.168.10.16:8000'); // 例: ws://192.168.0.10:8000
+// PCのIPアドレスを正しく設定し、wssを使用
+const socket = new WebSocket('wss://192.168.10.16:8000'); // 例: wss://192.168.0.10:8000
 
 socket.onopen = function(event) {
     console.log("WebSocket is open now.");
@@ -29,7 +29,7 @@ function handleOrientation(event) {
 
     console.log(`Roll: ${roll}, Pitch: ${pitch}, Yaw: ${yaw}`); // コンソールに出力
 
-    document.getElementById('samurai_x').innerText = `Roll4: ${roll}`;
+    document.getElementById('samurai_x').innerText = `Roll: ${roll}`;
     document.getElementById('samurai_y').innerText = `Pitch: ${pitch}`;
     document.getElementById('samurai_z').innerText = `Yaw: ${yaw}`;
 
