@@ -1,65 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>iPhone Sensor Data</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        .sensor-data {
-            font-size: 24px;
-            margin: 10px 0;
-        }
-    </style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title>vrmvViewer</title>
+
+<!-- css -->
+<style>
+body {
+    margin: 0px;
+    padding: 0px;
+    background: #ffffff;
+}
+#video {
+    display: block;
+    width: 100%;
+}
+.canvas_wrap {
+    position: relative;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    background-color: #000;
+}
+.canvas_box {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: #000;
+}
+#canvas_main {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+.canvas_start {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: #0066cc;
+    opacity: 0.5;
+    display: none;
+}
+.canvas_start .inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: table;
+    width: 100%;
+    height: 100vh;
+}
+.canvas_start .inner p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    color: #ffffff;
+}
+.canvas_loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: #00cc66;
+    display: none;
+}
+.canvas_loader .inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: table;
+    width: 100%;
+    height: 100vh;
+}
+.canvas_loader .inner p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    color: #ffffff;
+}
+</style>
+
+<!-- js -->
+<script src="js/jquery-1.11.2.min.js"></script>
+<script src="js/three/three.min.js"></script>
+<script src="js/three/DeviceOrientationControls.js"></script>
+<script src="js/three/OrbitControls.js"></script>
+<script src="js/three/Detector.js"></script>
+<script src="js/panoramaViewer.js"></script>
+<script>
+jQuery(function(){
+    $(window).on("load",function(){
+        $("#canvas_main").panoramaViewer({
+            src         : "src/texture.jpg",
+            rotationY   : 330
+        });
+    });
+});
+</script>
+
 </head>
 <body>
-    <h1>iPhone Sensor Data to ROS2_v2</h1>
-    <div class="sensor-data">Roll: <span id="roll">0</span></div>
-    <div class="sensor-data">Pitch: <span id="pitch">0</span></div>
-    <div class="sensor-data">Yaw: <span id="yaw">0</span></div>
-
-    <script>
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', handleOrientation, true);
-        } else {
-            alert("Device Orientation not supported on your device or browser.");
-        }
-
-        const socket = new WebSocket('ws://192.168.10.16:8000');
-
-        socket.onopen = function(event) {
-            console.log("WebSocket is open now.");
-        };
-
-        socket.onclose = function(event) {
-            console.log("WebSocket is closed now.");
-        };
-
-        socket.onerror = function(error) {
-            console.error("WebSocket error observed:", error);
-        };
-
-        function handleOrientation(event) {
-            const roll = event.beta ? event.beta.toFixed(2) : 0;  // Rotation around X-axis
-            const pitch = event.gamma ? event.gamma.toFixed(2) : 0; // Rotation around Y-axis
-            const yaw = event.alpha ? event.alpha.toFixed(2) : 0;  // Rotation around Z-axis
-
-            document.getElementById('roll').innerText = roll;
-            document.getElementById('pitch').innerText = pitch;
-            document.getElementById('yaw').innerText = yaw;
-
-            const data = {
-                roll: roll,
-                pitch: pitch,
-                yaw: yaw
-            };
-
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify(data));
-            }
-        }
-    </script>
+<p id="samurai_x">Waiting...</p>
+<p id="samurai_y">Waiting...</p>
+<p id="samurai_z">Waiting...</p>
+<video id="video" autoplay playsinline></video>
+<script src="index.js"></script>
 </body>
 </html>
