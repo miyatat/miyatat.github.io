@@ -1,7 +1,7 @@
 window.addEventListener('deviceorientation', handleOrientation, true);
 
 // PCのIPアドレスを正しく設定
-const socket = new WebSocket('ws://192.168.10.16:8000'); // 例: ws://192.168.0.10:8000
+const socket = new WebSocket('wss://192.168.10.16:8000'); // 例: ws://192.168.0.10:8000
 
 socket.onopen = function(event) {
     console.log("WebSocket is open now.");
