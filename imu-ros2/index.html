@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iPhone Sensor Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .sensor-data {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>iPhone Sensor Data to ROS2</h1>
+    <div class="sensor-data">Roll: <span id="roll">0</span></div>
+    <div class="sensor-data">Pitch: <span id="pitch">0</span></div>
+    <div class="sensor-data">Yaw: <span id="yaw">0</span></div>
+
+    <script>
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        } else {
+            alert("Device Orientation not supported on your device or browser.");
+        }
+
+        const socket = new WebSocket('ws://<PCのIPアドレス>:<ポート番号>');
+
+        socket.onopen = function(event) {
+            console.log("WebSocket is open now.");
+        };
+
+        socket.onclose = function(event) {
+            console.log("WebSocket is closed now.");
+        };
+
+        socket.onerror = function(error) {
+            console.error("WebSocket error observed:", error);
+        };
+
+        function handleOrientation(event) {
+            const roll = event.beta.toFixed(2);  // Rotation around X-axis
+            const pitch = event.gamma.toFixed(2); // Rotation around Y-axis
+            const yaw = event.alpha.toFixed(2);  // Rotation around Z-axis
+
+            document.getElementById('roll').innerText = roll;
+            document.getElementById('pitch').innerText = pitch;
+            document.getElementById('yaw').innerText = yaw;
+
+            const data = {
+                roll: roll,
+                pitch: pitch,
+                yaw: yaw
+            };
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify(data));
+            }
+        }
+    </script>
+</body>
+</html>
+
