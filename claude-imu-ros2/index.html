@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone方向センサー</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { font-weight: bold; }
+        .connected { color: green; }
+        .disconnected { color: red; }
+    </style>
+</head>
+<body>
+    <h1>iPhoneの方向データ</h1>
+    <p>接続状態: <span id="connection-status" class="status disconnected">未接続</span></p>
+    <h2>センサーデータ</h2>
+    <p id="orientation"></p>
+    <h2>送信データ</h2>
+    <pre id="sent-data"></pre>
+
+    <script>
+        const connectionStatus = document.getElementById('connection-status');
+        const orientationDisplay = document.getElementById('orientation');
+        const sentDataDisplay = document.getElementById('sent-data');
+        const socket = new WebSocket('ws://192.168.10.16:9090');
+
+        socket.onopen = () => {
+            console.log('ROS2 WebSocketサーバーに接続しました');
+            connectionStatus.textContent = '接続済み';
+            connectionStatus.classList.remove('disconnected');
+            connectionStatus.classList.add('connected');
+        };
+
+        socket.onclose = () => {
+            console.log('ROS2 WebSocketサーバーから切断されました');
+            connectionStatus.textContent = '切断';
+            connectionStatus.classList.remove('connected');
+            connectionStatus.classList.add('disconnected');
+        };
+
+        window.addEventListener('deviceorientation', (event) => {
+            const roll = event.gamma;
+            const pitch = event.beta;
+            const yaw = event.alpha;
+
+            orientationDisplay.textContent = `ロール: ${roll.toFixed(2)}°, ピッチ: ${pitch.toFixed(2)}°, ヨー: ${yaw.toFixed(2)}°`;
+
+            const data = { roll, pitch, yaw };
+            const jsonData = JSON.stringify(data);
+            socket.send(jsonData);
+
+            sentDataDisplay.textContent = jsonData;
+        });
+    </script>
+</body>
+</html>
