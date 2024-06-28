@@ -33,7 +33,7 @@
         function connectWebSocket() {
             // WSSを使用するようにアドレスを変更
             // 注意: 適切な証明書が設定されたサーバーのアドレスに変更してください
-            socket = new WebSocket('wss://192.168.10.19:9090');
+            socket = new WebSocket('wss://192.168.10.10:9090');
 
             socket.onopen = () => {
                 console.log('ROS2 WebSocketサーバーに接続しました');
@@ -65,7 +65,7 @@
             const pitch = event.beta;
             const yaw = event.alpha;
 
-            orientationDisplay.textContent = `ロール: ${roll?.toFixed(2) ?? 'N/A'}°, ピッチ: ${pitch?.toFixed(2) ?? 'N/A'}°, ヨー: ${yaw?.toFixed(2) ?? 'N/A'}°`;
+            orientationDisplay.textContent = `ロール10: ${roll?.toFixed(2) ?? 'N/A'}°, ピッチ: ${pitch?.toFixed(2) ?? 'N/A'}°, ヨー: ${yaw?.toFixed(2) ?? 'N/A'}°`;
 
             if (roll !== null && pitch !== null && yaw !== null) {
                 const data = { roll, pitch, yaw };
