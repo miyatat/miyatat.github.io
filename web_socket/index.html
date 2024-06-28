@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+hi
+    <script>
+        const ws = new WebSocket('wss://192.168.10.19:9090');  // WebSocketサーバーのアドレスに変更
+
+        ws.onopen = () => {
+            console.log('Connected to the WebSocket server');
+            ws.send('Hello, Server!');
+        };
+
+        ws.onmessage = (event) => {
+            console.log(`Received: ${event.data}`);
+        };
+
+        ws.onerror = (error) => {
+            console.error(`WebSocket error: ${error}`);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+    </script>
+</body>
+</html>
