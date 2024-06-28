@@ -33,7 +33,7 @@
         function connectWebSocket() {
             // WSSを使用するようにアドレスを変更
             // 注意: 適切な証明書が設定されたサーバーのアドレスに変更してください
-            socket = new WebSocket('wss://192.168.10.21:9090');
+            socket = new WebSocket('wss://192.168.10.19:9090');
 
             socket.onopen = () => {
                 console.log('ROS2 WebSocketサーバーに接続しました');
