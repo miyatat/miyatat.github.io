@@ -9,48 +9,82 @@
         .status { font-weight: bold; }
         .connected { color: green; }
         .disconnected { color: red; }
+        #start-button { font-size: 18px; padding: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
     <h1>iPhoneの方向データ</h1>
     <p>接続状態: <span id="connection-status" class="status disconnected">未接続</span></p>
-    <h2>センサーデータ</h2>
-    <p id="orientation"></p>
+    <button id="start-button">センサーへのアクセスを許可</button>
+    <h2>センサーデータ２</h2>
+    <p id="orientation">センサーデータを取得できません</p>
     <h2>送信データ</h2>
-    <pre id="sent-data"></pre>
+    <pre id="sent-data">データはまだ送信されていません</pre>
 
     <script>
         const connectionStatus = document.getElementById('connection-status');
         const orientationDisplay = document.getElementById('orientation');
         const sentDataDisplay = document.getElementById('sent-data');
-        const socket = new WebSocket('ws://192.168.10.16:9090');
+        const startButton = document.getElementById('start-button');
+        let socket;
 
-        socket.onopen = () => {
-            console.log('ROS2 WebSocketサーバーに接続しました');
-            connectionStatus.textContent = '接続済み';
-            connectionStatus.classList.remove('disconnected');
-            connectionStatus.classList.add('connected');
-        };
+        function connectWebSocket() {
+            socket = new WebSocket('ws://192.168.10.16:9090');
 
-        socket.onclose = () => {
-            console.log('ROS2 WebSocketサーバーから切断されました');
-            connectionStatus.textContent = '切断';
-            connectionStatus.classList.remove('connected');
-            connectionStatus.classList.add('disconnected');
-        };
+            socket.onopen = () => {
+                console.log('ROS2 WebSocketサーバーに接続しました');
+                connectionStatus.textContent = '接続済み';
+                connectionStatus.classList.remove('disconnected');
+                connectionStatus.classList.add('connected');
+            };
 
-        window.addEventListener('deviceorientation', (event) => {
+            socket.onclose = () => {
+                console.log('ROS2 WebSocketサーバーから切断されました');
+                connectionStatus.textContent = '切断';
+                connectionStatus.classList.remove('connected');
+                connectionStatus.classList.add('disconnected');
+            };
+        }
+
+        function handleOrientation(event) {
             const roll = event.gamma;
             const pitch = event.beta;
             const yaw = event.alpha;
 
-            orientationDisplay.textContent = `ロール: ${roll.toFixed(2)}°, ピッチ: ${pitch.toFixed(2)}°, ヨー: ${yaw.toFixed(2)}°`;
+            orientationDisplay.textContent = `ロール: ${roll?.toFixed(2) ?? 'N/A'}°, ピッチ: ${pitch?.toFixed(2) ?? 'N/A'}°, ヨー: ${yaw?.toFixed(2) ?? 'N/A'}°`;
 
-            const data = { roll, pitch, yaw };
-            const jsonData = JSON.stringify(data);
-            socket.send(jsonData);
+            if (roll !== null && pitch !== null && yaw !== null) {
+                const data = { roll, pitch, yaw };
+                const jsonData = JSON.stringify(data);
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    socket.send(jsonData);
+                }
+                sentDataDisplay.textContent = jsonData;
+            } else {
+                sentDataDisplay.textContent = "有効なセンサーデータがありません";
+            }
+        }
 
-            sentDataDisplay.textContent = jsonData;
+        startButton.addEventListener('click', () => {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                // iOS 13+ デバイス
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation);
+                            startButton.style.display = 'none';
+                            connectWebSocket();
+                        } else {
+                            alert('センサーへのアクセスが拒否されました。');
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                // 他のデバイスまたは古いiOS
+                window.addEventListener('deviceorientation', handleOrientation);
+                startButton.style.display = 'none';
+                connectWebSocket();
+            }
         });
     </script>
 </body>
