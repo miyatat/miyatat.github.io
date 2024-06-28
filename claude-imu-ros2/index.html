@@ -65,7 +65,7 @@
             const pitch = event.beta;
             const yaw = event.alpha;
 
-            orientationDisplay.textContent = `ロール１: ${roll?.toFixed(2) ?? 'N/A'}°, ピッチ: ${pitch?.toFixed(2) ?? 'N/A'}°, ヨー: ${yaw?.toFixed(2) ?? 'N/A'}°`;
+            orientationDisplay.textContent = `ロール: ${roll?.toFixed(2) ?? 'N/A'}°, ピッチ: ${pitch?.toFixed(2) ?? 'N/A'}°, ヨー: ${yaw?.toFixed(2) ?? 'N/A'}°`;
 
             if (roll !== null && pitch !== null && yaw !== null) {
                 const data = { roll, pitch, yaw };
